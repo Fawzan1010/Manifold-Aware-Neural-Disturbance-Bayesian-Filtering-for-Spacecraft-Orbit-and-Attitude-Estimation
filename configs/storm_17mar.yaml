@@ -1,0 +1,143 @@
+project:
+  name: spacecraft_hybrid_estimator
+  output_dir: outputs
+  seed: 42
+  device: cpu
+  synthetic:
+    dt: 1.0
+    horizon: 240
+    train_trajectories: 80
+    val_trajectories: 20
+    test_trajectories: 100
+    monte_carlo_trials: 100
+    scenarios:
+    - quiet
+    - maneuver
+    - biased_sensors
+    - high_disturbance
+    - degraded_measurements
+    - storm
+    include_range_doppler: true
+  simulation:
+    mu_earth: 398600.4418
+    radius_earth: 6378.137
+    j2: 0.00108262668
+    cd: 2.2
+    cr: 1.3
+    area: 12.0
+    mass: 920.0
+    epoch_utc: '2015-03-17T00:00:00Z'
+    inertia:
+    - - 145.0
+      - 0.0
+      - 0.0
+    - - 0.0
+      - 160.0
+      - 0.0
+    - - 0.0
+      - 0.0
+      - 120.0
+    star_tracker: true
+  measurement_noise:
+    gyro: 0.001
+    accel: 0.02
+    vector: 0.012
+    gps_pos: 0.012
+    gps_vel: 0.0008
+    range: 0.02
+    doppler: 0.0002
+    vector_st: 9.696e-05
+  process_noise:
+    bg: 2.0e-05
+    ba: 0.0002
+    torque: 0.002
+    accel: 0.01
+  filter:
+    ukf_alpha: 0.1
+    ukf_beta: 2.0
+    ukf_kappa: 0.0
+    q_scale: 0.5
+    r_scale: 2.0
+  fusion:
+    pinn_r_scale: 1.0
+    coupling:
+      PINN-only: 1.0
+      Transformer-only: 1.0
+  training:
+    window: 8
+    batch_size: 256
+    pinn_epochs: 150
+    transformer_epochs: 80
+    lr: 0.001
+    hidden: 128
+    depth: 4
+    activation: tanh
+    lambda_norm: 0.1
+    patience: 15
+    model_dim: 64
+    num_heads: 4
+    num_layers: 2
+  ablation:
+    seeds:
+    - 0
+    - 1
+    - 2
+    epochs: 15
+    subset_train_trajectories: 40
+    subset_test_trajectories: 20
+    depth:
+    - 2
+    - 4
+    - 6
+    hidden:
+    - 64
+    - 128
+    - 256
+    window:
+    - 2
+    - 4
+    - 8
+    lr:
+    - 0.0003
+    - 0.001
+    - 0.003
+    lambda_norm:
+    - 0.0
+    - 0.1
+    - 1.0
+    pinn_r_scale:
+    - 0.25
+    - 1.0
+    - 4.0
+    - 16.0
+    runtime_repeats: 3
+    runtime_discard_first: 1
+    pin_threads: 1
+    check_invariance: true
+  atmosphere:
+    model: exponential
+    space_weather_file: data/space_weather/omni2_2015.dat
+    use_ap_history: true
+    cache_seconds: 60.0
+    rho0: 3.614e-13
+    scale_height_km: 88.0
+    reference_altitude_km: 400.0
+  benchmark:
+    repeats: 5
+    discard_first: 1
+    n_trajectories: 3
+    pin_threads: 1
+  storm_experiment:
+    date: '2015-03-17'
+    start_utc: '2015-03-17T09:00:00Z'
+    duration_hours: 6.0
+    dt: 1.0
+    n_trajectories: 4
+    altitude_km: 500.0
+    scenario: historical_storm
+    pairings:
+    - mismatched
+    - matched
+    weather_index_mode: normalized
+    weather_index_ap_scale: 100.0
+    weather_index_max: 1.6
