@@ -1,0 +1,2 @@
+# Manifold-Aware-Neural-Disturbance-Bayesian-Filtering-for-Spacecraft-Orbit-and-Attitude-Estimation
+Code, configs, and results for a manifold-aware NDRN-UKF-MEKF spacecraft state estimator: synthetic simulator, filter implementations, disturbance-network training, pseudo-measurement fusion, and the 100-trajectory Monte Carlo benchmark plus measured-forcing (OMNI2/NRLMSISE-00) storm transfer study.
